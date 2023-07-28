@@ -9,8 +9,6 @@ const loaderTextEl = document.querySelector('.loader');
 const errorTextEl = document.querySelector('.error');
 const listInfoEl = document.querySelector('.cat-info');
 
-// fetchBreeds().then(data => console.log(data));
-
 errorTextEl.classList.add('is-hidden');
 loaderTextEl.classList.remove('is-hidden');
 selectBreedEl.classList.add('is-hidden');
@@ -18,7 +16,34 @@ listInfoEl.classList.add('is-hidden');
 
 selectBreedEl.addEventListener('change', handleSelectSubmit);
 
-breedInSelectAdd();
+fetchBreeds()
+  .then(response => {
+    loaderTextEl.classList.remove('is-hidden');
+
+    response.data.map(cat => {
+      let selectedOptionValue = selectBreedEl.value;
+      selectedOptionValue = cat.id;
+      let selectedOptionText =
+        selectBreedEl.options[selectBreedEl.selectedIndex];
+      selectedOptionText = cat.name;
+
+      let newOption = new Option(selectedOptionText, selectedOptionValue);
+      selectBreedEl.append(newOption);
+    });
+
+    new SlimSelect({
+      select: '.breed-select',
+    });
+
+    loaderTextEl.classList.add('is-hidden');
+    selectBreedEl.classList.remove('is-hidden');
+  })
+  .catch(err => {
+    loaderTextEl.classList.add('is-hidden');
+    errorTextEl.classList.remove('is-hidden');
+
+    Notify.failure(`❌ ${err.message} ❌`);
+  });
 
 function handleSelectSubmit() {
   listInfoEl.classList.add('is-hidden');
@@ -37,37 +62,6 @@ function handleSelectSubmit() {
       errorTextEl.classList.remove('is-hidden');
 
       Notify.failure(`❌${err.message}❌`);
-    });
-}
-
-function breedInSelectAdd() {
-  loaderTextEl.classList.remove('is-hidden');
-
-  return fetchBreeds()
-    .then(response => {
-      response.data.map(cat => {
-        let selectedOptionValue = selectBreedEl.value;
-        selectedOptionValue = cat.id;
-        let selectedOptionText =
-          selectBreedEl.options[selectBreedEl.selectedIndex];
-        selectedOptionText = cat.name;
-
-        let newOption = new Option(selectedOptionText, selectedOptionValue);
-        selectBreedEl.append(newOption);
-      });
-
-      new SlimSelect({
-        select: '.breed-select',
-      });
-
-      loaderTextEl.classList.add('is-hidden');
-      selectBreedEl.classList.remove('is-hidden');
-    })
-    .catch(err => {
-      loaderTextEl.classList.add('is-hidden');
-      errorTextEl.classList.remove('is-hidden');
-
-      Notify.failure(`❌ ${err.message} ❌`);
     });
 }
 
