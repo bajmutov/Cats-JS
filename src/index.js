@@ -51,7 +51,12 @@ function handleSelectSubmit() {
   const breedId = selectBreedEl.value;
   fetchCatByBreed(breedId)
     .then(response => {
+      console.log(response);
       createGalleryCard(response.data);
+
+if(!response.data.length){
+throw new Error('Sorry! No info about this cat, choose new breed');
+}
 
       listInfoEl.classList.remove('is-hidden');
       loaderTextEl.classList.add('is-hidden');
@@ -59,7 +64,6 @@ function handleSelectSubmit() {
     .catch(err => {
       loaderTextEl.classList.add('is-hidden');
       errorTextEl.classList.remove('is-hidden');
-
       Notify.failure(`❌${err.message}❌`);
     });
 }
