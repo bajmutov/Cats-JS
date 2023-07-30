@@ -47,6 +47,7 @@ fetchBreeds()
 function handleSelectSubmit() {
   listInfoEl.classList.add('is-hidden');
   loaderTextEl.classList.remove('is-hidden');
+   errorTextEl.classList.add('is-hidden');
 
   const breedId = selectBreedEl.value;
   fetchCatByBreed(breedId)
